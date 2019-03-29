@@ -68,7 +68,7 @@ int nowTime = 0;
 int dt = 0;
 static void update(void) {
 	//int milliseconds = 50;
-    nowTime = glutGet(GLUT_ELAPSED_TIME);
+    //nowTime = glutGet(GLUT_ELAPSED_TIME);
 
     // rotate the shape about the y-axis so that we can see the shading
     //if (rotateObject) {
@@ -88,7 +88,7 @@ static void update(void) {
 	}
 
 
-    glutPostRedisplay();
+    //glutPostRedisplay();
 
 	lastTime = nowTime;
 }
@@ -161,7 +161,7 @@ static void render(void) {
 	
 
 	// make the draw buffer to display buffer (i.e. display what we have drawn)
-	glutSwapBuffers();
+	//glutSwapBuffers();
 }
 
 static void reshape(int w, int h) {
@@ -289,42 +289,42 @@ void InitializeOGL(int argc, char** argv)
 	std::cout << "GPU Model:      " << glGetString(GL_RENDERER) << std::endl;
 }
 
-int main(int argc, char** argv) {
-	InitializeOGL(argc, argv);
-
-
-	ShaderProgram program;
-	// program.loadShaders("shaders/gouraud_vertex.glsl", "shaders/gouraud_fragment.glsl");
-	program.loadShaders("shaders/phong_vertex.glsl", "shaders/phong_fragment.glsl");
-	//program.loadShaders("shaders/phong_vertex.glsl", "shaders/fragment.glsl");
-	GLuint programId = program.getProgramId();
-	printf("SHADER PROGRAM: %d\n",programId);
-
-
-
-
-	//Model Car();
-	//Car = new Model("meshes/Low-Poly-Racing-Car.obj",programId);
-	Model* Car = new class Car("meshes/car.obj",programId);
-	Car->position += glm::vec3(0, 0, -2.0f);
-	Car->scale = glm::vec3(1.0, 1.0, 1.0);
-	Car->LoadGeometry();
-	Models.push_back(Car);
-
-	Model* Ground = new Model("meshes/cube.obj", programId);
-	Ground->scale = glm::vec3(500.0f, 0.1f, 500.0f);
-	Ground->LoadGeometry();
-	Models.push_back(Ground);
-
-	//Model* ref= new Model("meshes/cube.obj", programId);
-	//ref->position.x = -2.0f;
-	//ref->LoadGeometry();
-	//Models.push_back(ref);
-	
-	glutMainLoop();
-
-    return 0;
-}
+//int main(int argc, char** argv) {
+//	InitializeOGL(argc, argv);
+//
+//
+//	ShaderProgram program;
+//	// program.loadShaders("shaders/gouraud_vertex.glsl", "shaders/gouraud_fragment.glsl");
+//	program.loadShaders("shaders/phong_vertex.glsl", "shaders/phong_fragment.glsl");
+//	//program.loadShaders("shaders/phong_vertex.glsl", "shaders/fragment.glsl");
+//	GLuint programId = program.getProgramId();
+//	printf("SHADER PROGRAM: %d\n",programId);
+//
+//
+//
+//
+//	//Model Car();
+//	//Car = new Model("meshes/Low-Poly-Racing-Car.obj",programId);
+//	Model* Car = new class Car("meshes/car.obj",programId);
+//	Car->position += glm::vec3(0, 0, -2.0f);
+//	Car->scale = glm::vec3(1.0, 1.0, 1.0);
+//	Car->LoadGeometry();
+//	Models.push_back(Car);
+//
+//	Model* Ground = new Model("meshes/cube.obj", programId);
+//	Ground->scale = glm::vec3(500.0f, 0.1f, 500.0f);
+//	Ground->LoadGeometry();
+//	Models.push_back(Ground);
+//
+//	//Model* ref= new Model("meshes/cube.obj", programId);
+//	//ref->position.x = -2.0f;
+//	//ref->LoadGeometry();
+//	//Models.push_back(ref);
+//	
+//	glutMainLoop();
+//
+//    return 0;
+//}
 
 void updateProjectionMatrix(int width, int height) {
 	// projection matrix - perspective projection
@@ -436,104 +436,105 @@ void onError(int error, const char* description) {
 	std::cerr << "Error: " << description << std::endl;
 }
 
-//int main(int argc, char** argv) {
-//
-//	// set a function to receive GLFW errors
-//	glfwSetErrorCallback(onError);
-//
-//	// initialize GLFW (windowing abstraction library)
-//	if (!glfwInit()) {
-//		// initialization failed
-//		std::cerr << "GLFW Error:  Unable to initialize GLFW" << std::endl;
-//		return -1;
-//	}
-//
-//	width = 900;
-//	height = 800;
-//
-//	// create a window and an OpenGL context
-//	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-//	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-//	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
-//
-//	glfwWindowHint(GLFW_SAMPLES, 4);
-//
-//	GLFWwindow* window = glfwCreateWindow(width, height, "CSCI 3090U Base OpenGL Project", NULL, NULL);
-//	if (!window) {
-//		// window or OpenGL context creation failed
-//		std::cerr << "GLFW Error:  Unable to create window" << std::endl;
-//		return -1;
-//	}
-//
-//	glfwSetMouseButtonCallback(window, mouseg);
-//	glfwSetCursorPosCallback(window, dragg);
-//	glfwSetKeyCallback(window, keyboard);
-//	glfwSetFramebufferSizeCallback(window, reshape);
-//	updateProjectionMatrix(width, height);
-//	glfwSwapInterval(1);
-//
-//	glfwMakeContextCurrent(window);
-//
-//	// initialize GLEW (OpenGL extension loading library)
-//	glewInit();
-//	if (!GLEW_VERSION_2_0) {
-//		std::cerr << "OpenGL 2.0 not available" << std::endl;
-//		return 1;
-//	}
-//	std::cout << "GLEW Version:   " << glewGetString(GLEW_VERSION) << std::endl;
-//	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
-//	std::cout << "GLSL Version:   " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
-//	std::cout << "GPU Vendor:     " << glGetString(GL_VENDOR) << std::endl;
-//	std::cout << "GPU Model:      " << glGetString(GL_RENDERER) << std::endl;
-//
-//	// setup the error handling
-//	GLint flags; glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
-//	if (flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
-//		glEnable(GL_DEBUG_OUTPUT);
-//		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-//		glDebugMessageCallback(openGlDebugCallback, nullptr);
-//		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
-//	}
-//
-//	ShaderProgram program;
-//	// program.loadShaders("shaders/gouraud_vertex.glsl", "shaders/gouraud_fragment.glsl");
-//	program.loadShaders("shaders/phong_vertex.glsl", "shaders/phong_fragment.glsl");
-//	GLuint programId = program.getProgramId();
-//
-//
-//
-//
-//	//Model Car();
-//	//Car = new Model("meshes/Low-Poly-Racing-Car.obj",programId);
-//	Model* Car = new class Car("meshes/cube.obj",programId);
-//	Car->position += glm::vec3(0, 0, -25.0f);
-//	Car->LoadGeometry();
-//	Models.push_back(Car);
-//
-//	//Model* Ground = new Model("meshes/cube.obj", programId);
-//	//Ground->scale = glm::vec3(500.0f, 0.1f, 500.0f);
-//	//Ground->LoadGeometry();
-//	//Models.push_back(Ground);
-//
-//	//Model* ref = new Model("meshes/cube.obj", programId);
-//	//ref->position.z = -5.0f;
-//	//ref->LoadGeometry();
-//	//Models.push_back(ref);
-//
-//
-//	while (!glfwWindowShouldClose(window)) {
-//		// perform updates (e.g. physics)
-//		update();
-//
-//		// re-draw
-//		render();
-//
-//		glfwSwapBuffers(window);
-//		glfwPollEvents();
-//	}
-//
-//	glfwDestroyWindow(window);
-//	glfwTerminate();
-//
-//	return 0;
-//}
+int main(int argc, char** argv) {
+
+	// set a function to receive GLFW errors
+	glfwSetErrorCallback(onError);
+
+	// initialize GLFW (windowing abstraction library)
+	if (!glfwInit()) {
+		// initialization failed
+		std::cerr << "GLFW Error:  Unable to initialize GLFW" << std::endl;
+		return -1;
+	}
+
+	width = 900;
+	height = 800;
+
+	// create a window and an OpenGL context
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+
+	//glfwWindowHint(GLFW_SAMPLES, 4);
+
+	GLFWwindow* window = glfwCreateWindow(width, height, "CSCI 3090U Base OpenGL Project", NULL, NULL);
+	if (!window) {
+		// window or OpenGL context creation failed
+		std::cerr << "GLFW Error:  Unable to create window" << std::endl;
+		return -1;
+	}
+
+	glfwSetMouseButtonCallback(window, mouseg);
+	glfwSetCursorPosCallback(window, dragg);
+	glfwSetKeyCallback(window, keyboard);
+	glfwSetFramebufferSizeCallback(window, reshape);
+	updateProjectionMatrix(width, height);
+	glfwSwapInterval(1);
+
+	glfwMakeContextCurrent(window);
+
+	// initialize GLEW (OpenGL extension loading library)
+	glewInit();
+	if (!GLEW_VERSION_2_0) {
+		std::cerr << "OpenGL 2.0 not available" << std::endl;
+		return 1;
+	}
+	std::cout << "GLEW Version:   " << glewGetString(GLEW_VERSION) << std::endl;
+	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
+	std::cout << "GLSL Version:   " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+	std::cout << "GPU Vendor:     " << glGetString(GL_VENDOR) << std::endl;
+	std::cout << "GPU Model:      " << glGetString(GL_RENDERER) << std::endl;
+
+	// setup the error handling
+	GLint flags; glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+	if (flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(openGlDebugCallback, nullptr);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+	}
+
+	ShaderProgram program;
+	// program.loadShaders("shaders/gouraud_vertex.glsl", "shaders/gouraud_fragment.glsl");
+	program.loadShaders("shaders/phong_vertex.glsl", "shaders/phong_fragment.glsl");
+	GLuint programId = program.getProgramId();
+
+
+
+
+	//Model Car();
+	//Car = new Model("meshes/Low-Poly-Racing-Car.obj",programId);
+	Model* Car = new class Car("meshes/car.obj",programId);
+	Car->position += glm::vec3(0, 0, -2.0f);
+	Car->scale = glm::vec3(1.0, 1.0, 1.0);
+	Car->LoadGeometry();
+	Models.push_back(Car);
+
+	Model* Ground = new Model("meshes/cube.obj", programId);
+	Ground->scale = glm::vec3(500.0f, 0.1f, 500.0f);
+	Ground->LoadGeometry();
+	Models.push_back(Ground);
+
+	//Model* ref = new Model("meshes/cube.obj", programId);
+	//ref->position.z = -5.0f;
+	//ref->LoadGeometry();
+	//Models.push_back(ref);
+
+
+	while (!glfwWindowShouldClose(window)) {
+		// perform updates (e.g. physics)
+		update();
+
+		// re-draw
+		render();
+
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
+
+	glfwDestroyWindow(window);
+	glfwTerminate();
+
+	return 0;
+}
