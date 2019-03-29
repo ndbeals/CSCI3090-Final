@@ -130,6 +130,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ObjMesh.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="Track.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Car.h" />
@@ -138,6 +139,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="ObjMesh.h" />
     <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="Track.h" />
     <ClInclude Include="trackball.h" />
   </ItemGroup>
   <ItemGroup>

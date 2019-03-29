@@ -112,9 +112,10 @@ public:
 	}
 
 
-	void LoadGeometry();
+	virtual void LoadGeometry();
 
-	void Update(int time, int dtime);
+	//virtual void Update(int time, int dtime);
+	virtual void Update(double time, double dtime);
 
 	void Render(const glm::mat4 & view, const glm::mat4 & projection, const RenderData & data);
 	

@@ -26,6 +26,8 @@
 
 #include "Model.h"
 #include "Car.h"
+#include "Track.h"
+
 float scaleFactor = 1.0f;
 
 
@@ -63,12 +65,13 @@ std::vector<Model*> Models;
 glm::mat4 projection;
 
 
-int lastTime = 0;
-int nowTime = 0;
+double lastTime = 0;
+double nowTime = 0;
 int dt = 0;
 static void update(void) {
 	//int milliseconds = 50;
     //nowTime = glutGet(GLUT_ELAPSED_TIME);
+	nowTime = glfwGetTime();
 
     // rotate the shape about the y-axis so that we can see the shading
     //if (rotateObject) {
@@ -95,36 +98,28 @@ static void update(void) {
 
 static void render(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 
 	// turn on depth buffering
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_MULTISAMPLE);
+	glEnable(GL_MULTISAMPLE);
 
 	// projection matrix - perspective projection
 	// FOV:           45°
 	// Aspect ratio:  4:3 ratio
 	// Z range:       between 0.1 and 100.0
-	float aspectRatio = (float)width / (float)height;
-	glm::mat4 projection = glm::perspective(glm::radians(60.0f), aspectRatio, 0.001f, 1000.0f);
+	//float aspectRatio = (float)width / (float)height;
+	//glm::mat4 projection = glm::perspective(glm::radians(60.0f), aspectRatio, 0.001f, 1000.0f);
 
-	// projection matrix - orthographic (non-perspective) projection
-	// Note:  These are in world coordinates
-	// xMin:          -10
-	// xMax:          +10
-	// yMin:          -10
-	// yMax:          +10
-	// zMin:           0
-	// zMax:          +100
-	//glm::mat4 projection = glm::ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f);
-
-
-	//glm::vec4 test = glm::vec4(0, 5, 5, 1);
-
-	//glm::vec3 lookpos = car->modelm*glm::vec4(0,0,-5,1);
-	//eyePosition = car->modelm*test;
 
 	Model* car = Models[0];
-	glm::vec3 lookpos = glm::vec3(0,0,0);
+	glm::vec4 test = glm::vec4(0, 5, 5, 1);
+
+	//glm::vec3 lookpos = car->modelm*glm::vec4(0,0,-5,1);
+	eyePosition = car->modelm*test;
+
+	//Model* car = Models[0];
+	glm::vec3 lookpos = car->modelm*glm::vec4(0,0,-5,1);
 
 	// view matrix - orient everything around our preferred view
 	glm::mat4 view = glm::lookAt(
@@ -133,11 +128,11 @@ static void render(void) {
 		glm::vec3(0,1,0)     // up
 	);
 
-	glm::vec3 sunPos = glm::vec4(50.0f, 50.0f, -20.0f, 1.0f);
+	glm::vec4 sunPos = view*glm::vec4(0.0f, 50.0f, 0.0f, 1.0f);
 	glm::vec3 test2 = glm::vec3(0, 40, 0);
 	RenderData render = {
 		eyePosition,
-		glm::vec3(0,40,0),
+		glm::vec3(sunPos),
 		Vector3{0.8,0.2,0.2},
 		shininess
 	};
@@ -156,9 +151,6 @@ static void render(void) {
 
 
 	//carr->modelMeshes[0]->Render(test, view, projection,render);
-
-
-	
 
 	// make the draw buffer to display buffer (i.e. display what we have drawn)
 	//glutSwapBuffers();
@@ -356,7 +348,10 @@ void reshape(GLFWwindow *window, int w, int h) {
 
 void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	printf("key pressed");
+	//printf("key pressed");
+
+	Models[0]->Keyboard(window, key, scancode, action, mods);
+
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
 	}
@@ -448,15 +443,15 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 
-	width = 900;
-	height = 800;
+	width = 1800;
+	height = 1200;
 
 	// create a window and an OpenGL context
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
-	//glfwWindowHint(GLFW_SAMPLES, 4);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 
 	GLFWwindow* window = glfwCreateWindow(width, height, "CSCI 3090U Base OpenGL Project", NULL, NULL);
 	if (!window) {
@@ -500,26 +495,46 @@ int main(int argc, char** argv) {
 	program.loadShaders("shaders/phong_vertex.glsl", "shaders/phong_fragment.glsl");
 	GLuint programId = program.getProgramId();
 
+	ShaderProgram program2;
+	// program.loadShaders("shaders/gouraud_vertex.glsl", "shaders/gouraud_fragment.glsl");
+	program2.loadShaders("shaders/vertex.glsl", "shaders/fragment.glsl");
+	GLuint programId2 = program2.getProgramId();
 
+	ShaderProgram program3;
+	// program.loadShaders("shaders/gouraud_vertex.glsl", "shaders/gouraud_fragment.glsl");
+	program3.loadShaders("shaders/skybox_vertex.glsl", "shaders/skybox_fragment.glsl");
+	GLuint programId3 = program3.getProgramId();
 
 
 	//Model Car();
 	//Car = new Model("meshes/Low-Poly-Racing-Car.obj",programId);
 	Model* Car = new class Car("meshes/car.obj",programId);
-	Car->position += glm::vec3(0, 0, -2.0f);
+	Car->position += glm::vec3(0, -0.50f, 5.0f);
 	Car->scale = glm::vec3(1.0, 1.0, 1.0);
 	Car->LoadGeometry();
 	Models.push_back(Car);
 
 	Model* Ground = new Model("meshes/cube.obj", programId);
 	Ground->scale = glm::vec3(500.0f, 0.1f, 500.0f);
+	Ground->position = glm::vec3(0, -3.0f, 0);
 	Ground->LoadGeometry();
 	Models.push_back(Ground);
 
-	//Model* ref = new Model("meshes/cube.obj", programId);
+	Model* Ground2 = new Model("meshes/skybox.obj", programId3);
+	Ground2->scale = glm::vec3(1000.0f, -500.5f, 1000.0f);
+	Ground2->position = glm::vec3(0, -1.0f, 0);
+	Ground2->LoadGeometry();
+	Models.push_back(Ground2);
+
+
+	//Model* ref = new Track(programId2);
 	//ref->position.z = -5.0f;
 	//ref->LoadGeometry();
 	//Models.push_back(ref);
+
+	//Model* Skybox = new Model("meshes/cube.obj", programId2);
+	//Skybox->LoadGeometry();
+	//Models.push_back(Skybox);
 
 
 	while (!glfwWindowShouldClose(window)) {

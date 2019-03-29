@@ -28,10 +28,10 @@ public:
 	float slowFactor = 0.1f;
 	float accelFactor = 0.8f;
 
-	float maxForward = 15.5f;
-	float maxBackward = -2.0f;
+	float maxForward = 35.5f;
+	float maxBackward = -30.0f;
 
-	glm::vec3 pivotPoint = glm::vec3(0, 0, 1.1f);
+	glm::vec3 pivotPoint = glm::vec3(0, 0, -0.55f);
 
 	//Car();
 	~Car();
@@ -42,7 +42,8 @@ public:
 	Car(std::string model, GLuint shader) : Model(model, shader) {};
 
 
-	void Update(int time, int dtime);
+	//void Update(int time, int dtime);
+	void Update(double time, double dtime);
 
 	virtual void Keyboard(GLFWwindow*, int, int, int, int);
 	void KeyboardUp(unsigned char key, int x, int y);

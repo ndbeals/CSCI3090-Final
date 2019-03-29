@@ -124,27 +124,12 @@ void Model::LoadGeometry()
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 				// send the data to OpenGL
-				//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 
 				// bind the texture to unit 0
 				glBindTexture(GL_TEXTURE_2D, texture_id);
 				glActiveTexture(GL_TEXTURE0);
 
-				//glBindTexture(GL_TEXTURE_2D, texture_id);
-				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				//if (comp == 3) {
-				//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-				//}
-				//else if (comp == 4) {
-				//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA,
-				//		GL_UNSIGNED_BYTE, image);
-				//}
-				//else {
-				//	assert(0);  // TODO
-				//}
-				//glBindTexture(GL_TEXTURE_2D, 0);
 				stbi_image_free(image);
 				Mesh::loadedTextures.insert(std::make_pair(mp->diffuse_texname, texture_id));
 			}
@@ -241,7 +226,7 @@ void Model::LoadGeometry()
 	}
 }
 
-void Model::Update(int time, int dtime)
+void Model::Update(double time, double dtime)
 {
 	//angle.y += 0.05f * (float)dtime;
 	//angle.z += 0.02f * (float)dtime;
@@ -251,8 +236,8 @@ void Model::Update(int time, int dtime)
 	////glm::vec3 scaleVector = glm::vec3(1.0f, 1.0f, 1.0f) * scaleFactor;
 	modelm = glm::mat4(1.0f);
 	////model = glm::rotate(model, glm::radians(0.01f*(float)c), glm::vec3(0, 1, 0)); // rotate about the y-axis
-	modelm = glm::scale(modelm, scale);
 	modelm = glm::translate(modelm, position);
+	modelm = glm::scale(modelm, scale);
 	modelm = glm::rotate(modelm, glm::radians(angle.x), glm::vec3(1, 0, 0)); // rotate about the x-axis
 	modelm = glm::rotate(modelm, glm::radians(angle.y), glm::vec3(0, 1, 0)); // rotate about the y-axis
 	modelm = glm::rotate(modelm, glm::radians(angle.z), glm::vec3(0, 0, 1)); // rotate about the z-axis
@@ -382,12 +367,19 @@ void Mesh::Render(const glm::mat4& model, const glm::mat4& view, const glm::mat4
 	glUniformMatrix4fv(mvMatrixId, 1, GL_FALSE, &mv[0][0]);
 
 	// the position of our camera/eye
+	glm::vec4 viewEye =  glm::vec4(data.eyePosition, 1);
+	//glm::vec4 viewEye = glm::vec4(data.eyePosition,1);
 	GLuint eyePosId = glGetUniformLocation(shaderProgram, "u_EyePosition");
-	glUniform3f(eyePosId, data.eyePosition.x, data.eyePosition.y, data.eyePosition.z);
+	glUniform3f(eyePosId, viewEye.x,viewEye.y,viewEye.z);
 
+	//glm::vec4 lightPos = model * glm::vec4(data.lightPosition, 1);
+	//glm::vec3 lightPos = model * glm::vec4((data.lightPosition - data.eyePosition), 1);//glm::vec3(model*glm::vec4(0, 0, 0, 1));
+	//glm::vec3 lightPos = view * glm::vec4((data.lightPosition - data.eyePosition), 1);//glm::vec3(model*glm::vec4(0, 0, 0, 1));
+	//glm::vec3 lightPos = mv*glm::vec4((data.lightPosition), 1);//glm::vec3(model*glm::vec4(0, 0, 0, 1));
+	glm::vec3 lightPos = data.lightPosition;
 	// the position of our light
 	GLuint lightPosId = glGetUniformLocation(shaderProgram, "u_LightPos");
-	glUniform3f(lightPosId, data.lightPosition.x,data.lightPosition.y,data.lightPosition.z);
+	glUniform3f(lightPosId, lightPos.x, lightPos.y, lightPos.z);
 
 	// the colour of our object
 	GLuint diffuseColourId = glGetUniformLocation(shaderProgram, "u_DiffuseColour");
@@ -401,7 +393,7 @@ void Mesh::Render(const glm::mat4& model, const glm::mat4& view, const glm::mat4
 
 	// the shininess of the object's surface
 	GLuint shininessId = glGetUniformLocation(shaderProgram, "u_Shininess");
-	glUniform1f(shininessId, shininess);
+	glUniform1f(shininessId, shininess*3.0f);
 
 	GLuint hasTextureId = glGetUniformLocation(shaderProgram, "u_hasTexture");
 	glUniform1i(hasTextureId, textureId );
@@ -445,11 +437,8 @@ void Mesh::Render(const glm::mat4& model, const glm::mat4& view, const glm::mat4
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 	glDrawElements(GL_TRIANGLES, VertexCount, GL_UNSIGNED_INT, (void*)0);
 
-	// for testing purposes
-	//glutSolidTorus(0.5f, 1.5f, 12, 10);
 
 	// disable the attribute arrays
-
 	glDisableVertexAttribArray(positionAttribId);
 
 	if (textureCoordsAttribId > -1)

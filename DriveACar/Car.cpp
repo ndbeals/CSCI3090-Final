@@ -19,9 +19,9 @@ Car::~Car()
 }
 
 
-void Car::Update(int time, int dtime)
+void Car::Update(double time, double dtime)
 {
-	float dt = (float)dtime / 1000.0f;
+	float dt = (float)dtime;
 
 	//angle.y += 0.05f * (float)dtime;
 	//position.z -= 0.001f * float(dtime);
@@ -44,10 +44,10 @@ void Car::Update(int time, int dtime)
 	scale = glm::vec3(1, 1, 1);
 
 	//model = glm::rotate(model, glm::radians(0.01f*(float)c), glm::vec3(0, 1, 0)); // rotate about the y-axis
+	modelm = glm::scale(modelm, scale);
 	modelm = glm::translate(modelm, position);
 	modelm = glm::translate(modelm, pivotPoint);
 
-	//modelm = glm::scale(modelm, scale);
 	modelm = glm::rotate(modelm, glm::radians(angle.x), glm::vec3(1, 0, 0)); // rotate about the x-axis
 	modelm = glm::rotate(modelm, glm::radians(angle.y), glm::vec3(0, 1, 0)); // rotate about the y-axis
 	modelm = glm::rotate(modelm, glm::radians(angle.z), glm::vec3(0, 0, 1)); // rotate about the z-axis
@@ -130,18 +130,18 @@ void Car::Keyboard(GLFWwindow* window, int key, int scancode, int action, int mo
 			//position = modelm * glm::vec4(0, 0, -1,1);
 			wDown = true;
 		}
-		else if (key == 's')
+		else if (key == GLFW_KEY_S)
 		{
 			//position.x -= 0.1f;
 			sDown = true;
 		}
-		else if (key == 'a')
+		else if (key == GLFW_KEY_A)
 		{
 			//angle.y += 0.15f;
 			aDown = true;
 			dDown = false;
 		}
-		else if (key=='d')
+		else if (key== GLFW_KEY_D)
 		{
 			//angle.y -= 0.4f;
 			dDown = true;
@@ -150,7 +150,27 @@ void Car::Keyboard(GLFWwindow* window, int key, int scancode, int action, int mo
 	}
 	else if (action==GLFW_RELEASE)
 	{
-
+		if (key == GLFW_KEY_W)
+		{
+			//position.x += 0.1f;
+			//position = modelm * glm::vec4(0, 0, -1,1);
+			wDown = false;
+		}
+		else if (key == GLFW_KEY_S)
+		{
+			//position.x -= 0.1f;
+			sDown = false;
+		}
+		else if (key == GLFW_KEY_A)
+		{
+			//angle.y += 0.15f;
+			aDown = false;
+		}
+		else if (key == GLFW_KEY_D)
+		{
+			//angle.y -= 0.4f;
+			dDown = false;
+		}
 	}
 }
 

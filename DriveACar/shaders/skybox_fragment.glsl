@@ -18,7 +18,7 @@ varying vec3 v_Normal;
 varying vec2 v_TextureCoords;
 
 void main() {
-   // vec3 positionViewSpace = vec3(u_MVMatrix*v_Position); 
+   vec3 positionViewSpace = vec3(u_MVMatrix*v_Position); 
    // vec3 lightViewSpace = vec3(vec4(u_LightPos,1));
    vec3 lightViewSpace = u_LightPos;//vec3(vec4(u_LightPos,1));
    // vec3 eyeViewSpace = vec3(u_MVMatrix*vec4(u_EyePosition,1));
@@ -50,18 +50,19 @@ void main() {
    float diffuse = clamp(dot(normal, lightVector_viewspace), 0, 1);
 
    // attenuate
-   diffuse = diffuse * (1.0 / (1.0 + (0.00025 * distance * distance)));
+   //diffuse = diffuse * (1.0 / (1.0 + (0.00025 * distance * distance)));
 
    // specular
    vec3 incidenceVector = -lightVector_viewspace;
    vec3 reflectionVector = reflect(incidenceVector, normal);
    vec3 eyeVector = normalize(eyeViewSpace - v_Position.xyz);
    float cosAngle = clamp(dot(eyeVector, reflectionVector), 0, 1);
-   float specular = clamp(pow(cosAngle, u_Shininess),0.0f,5000.0f);
+   float specular = clamp(pow(cosAngle, u_Shininess),0.0f,200.0f);
 
-   gl_FragColor = baseColour * specular +
-                  baseColour * diffuse +
-                  ambientColour; //+ vec4(v_TextureCoords.x,v_TextureCoords.y,0.1,1);
+   gl_FragColor = baseColour;
+   // // * specular +
+   //                baseColour * diffuse +
+   //                ambientColour; //+ vec4(v_TextureCoords.x,v_TextureCoords.y,0.1,1);
    // gl_FragColor = vec4(0.8,0.8,0.8,1);
 
    // gl_FragColor = baseColour;
