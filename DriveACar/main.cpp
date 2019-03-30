@@ -87,7 +87,7 @@ static void render(void) {
 
 
 	Model* car = Models[0];
-	glm::vec4 test = glm::vec4(0, 5, 5, 1);
+	glm::vec4 test = glm::vec4(1.0f, 6.0f, 8.0f, 1);
 
 	//glm::vec3 lookpos = car->modelm*glm::vec4(0,0,-5,1);
 	eyePosition = car->modelm*test;
@@ -316,51 +316,49 @@ int main(int argc, char** argv) {
 		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
 	}
 
-	ShaderProgram program;
+	ShaderProgram phong;
+	// phong.loadShaders("shaders/gouraud_vertex.glsl", "shaders/gouraud_fragment.glsl");
+	phong.loadShaders("shaders/phong_vertex.glsl", "shaders/phong_fragment.glsl");
+	GLuint phongId = phong.getProgramId();
+
+	ShaderProgram fullbright;
 	// program.loadShaders("shaders/gouraud_vertex.glsl", "shaders/gouraud_fragment.glsl");
-	program.loadShaders("shaders/phong_vertex.glsl", "shaders/phong_fragment.glsl");
-	GLuint programId = program.getProgramId();
+	fullbright.loadShaders("shaders/vertex.glsl", "shaders/fragment.glsl");
+	GLuint fullbrightId = fullbright.getProgramId();
 
-	ShaderProgram program2;
+	ShaderProgram skybox;
 	// program.loadShaders("shaders/gouraud_vertex.glsl", "shaders/gouraud_fragment.glsl");
-	program2.loadShaders("shaders/vertex.glsl", "shaders/fragment.glsl");
-	GLuint programId2 = program2.getProgramId();
-
-	ShaderProgram program3;
-	// program.loadShaders("shaders/gouraud_vertex.glsl", "shaders/gouraud_fragment.glsl");
-	program3.loadShaders("shaders/skybox_vertex.glsl", "shaders/skybox_fragment.glsl");
-	GLuint programId3 = program3.getProgramId();
+	skybox.loadShaders("shaders/skybox_vertex.glsl", "shaders/skybox_fragment.glsl");
+	GLuint skyboxId = skybox.getProgramId();
 
 
-	//Model Car();
-	//Car = new Model("meshes/Low-Poly-Racing-Car.obj",programId);
-	Model* Car = new class Car("meshes/car.obj",programId);
-	Car->position += glm::vec3(0, -0.50f, 5.0f);
+	Model* Car = new class Car("meshes/car.obj",phongId);
+	Car->position += glm::vec3(0, 0.15f, 5.0f);
 	Car->scale = glm::vec3(1.0, 1.0, 1.0);
 	Car->LoadGeometry();
 	Models.push_back(Car);
 
-	Model* Ground = new Model("meshes/cube.obj", programId);
+	Model* Ground = new Model("meshes/cube.obj", phongId);
 	Ground->scale = glm::vec3(500.0f, 0.1f, 500.0f);
-	Ground->position = glm::vec3(0, -3.0f, 0);
+	Ground->position = glm::vec3(0, 0.0f, 0);
 	Ground->LoadGeometry();
 	Models.push_back(Ground);
 
-	Model* Ground2 = new Model("meshes/skybox.obj", programId3);
+	Model* Ground2 = new Model("meshes/skybox.obj", skyboxId);
 	Ground2->scale = glm::vec3(1000.0f, -500.5f, 1000.0f);
-	Ground2->position = glm::vec3(0, -1.0f, 0);
+	Ground2->position = glm::vec3(0, 0, 0);
 	Ground2->LoadGeometry();
 	Models.push_back(Ground2);
 
 
-	//Model* ref = new Track(programId2);
-	//ref->position.z = -5.0f;
-	//ref->LoadGeometry();
-	//Models.push_back(ref);
+	Model* ref = new Track(fullbrightId);
+	//ref->position.z = .0f;
+	ref->position = glm::vec3(0.0f, 0.1f, 0.0f);
+	ref->LoadGeometry();
+	Models.push_back(ref);
 
-	//Model* Skybox = new Model("meshes/cube.obj", programId2);
-	//Skybox->LoadGeometry();
-	//Models.push_back(Skybox);
+
+	printf("\n\nDrive along the track!\n\tUse W A S D to control the car\n");
 
 
 	while (!glfwWindowShouldClose(window)) {

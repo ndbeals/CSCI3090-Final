@@ -1,6 +1,7 @@
 #include "Track.h"
 #include <cmath>
-
+#include <random>
+#define PI 3.141592f
 
 Track::Track()
 {
@@ -16,15 +17,16 @@ Track::~Track()
 {
 }
 
-glm::vec3 controlPoint1(-2.00f, -1.50f, 2.00f);
-glm::vec3 controlPoint2(2.50f, 2.50f, -0.50f);
-glm::vec3 controlPoint3(-1.00f, 1.00f, -2.50f);
-glm::vec3 controlPoint4(2.00f, -2.50f, -0.50f);
+//glm::vec3 controlPoint1(-3.00f, 0, 3.00f);
+//glm::vec3 controlPoint2(2.50f, 0.0f, -1.50f);
+//glm::vec3 controlPoint3(-6.00f, 0.0f, -5.50f);
+//glm::vec3 controlPoint4(2.00f, 0.0f, -10.50f);
 
 void Track::LoadGeometry()
 {
 	Mesh* newMesh = new Mesh();
 
+	std::vector<Vector3> controlPoints;
 	std::vector<Vector3> vertexPositions;
 
 	std::vector<Vector3> vertexBuffer;
@@ -32,29 +34,65 @@ void Track::LoadGeometry()
 	std::vector<Vector2> textureCoordBuffer;
 	std::vector<unsigned int> indexBuffer;
 
-	float stepSize = 1.0f / 100.0f;
 
-	//vertexBuffer.emplace_back(Vector3{ 0.0f,0.0f,0.0f });
-	//vertexBuffer.emplace_back(Vector3{ 1.0f,0.0f,0.0f });
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	std::uniform_real_distribution<float> dist(-20.0f, 20.0f);
+	std::uniform_real_distribution<float> pdist(15.0f, 50.0f);
 
-	unsigned int index = 0;
-	for (float t = 0; t < (1 + stepSize); t += stepSize)
+	float stepSize = 1.0f / 50.0f;
+
+	float radius = pdist(mt);
+	//float periods = pdist(mt) / 5.0f;
+	float periods = 2.0f;
+
+
+	float accumx = 0.0f;
+	float accumz = 0.0f;
+	for (float t = 0.0f; t < (1.0f + stepSize); t += stepSize)
 	{
-		//float vx = pow((1 - t), 3) * controlPoint1.x + pow((1 - t), 2) * 3 * t*controlPoint2.x + (1 - t) * 3 * pow(t, 2)*controlPoint3.x + pow(t, 3)*controlPoint4.x;
-		//float vy = pow((1 - t), 3) * controlPoint1.y + pow((1 - t), 2) * 3 * t*controlPoint2.y + (1 - t) * 3 * pow(t, 2)*controlPoint3.y + pow(t, 3)*controlPoint4.y;
-		//float vz = pow((1 - t), 3) * controlPoint1.z + pow((1 - t), 2) * 3 * t*controlPoint2.z + (1 - t) * 3 * pow(t, 2)*controlPoint3.z + pow(t, 3)*controlPoint4.z;
+		float rz = dist(mt);
+		//float z = (t * 100.0f);// +rz;
+		//float z = sin(5.0f*t)*100.0f;
+		float z = radius * sin(t * periods * PI) + rz * sin(t * periods * PI);
+		accumz += 0.1f*z + exp(t);
 
-		float vy = 0;
+		float rx = (dist(mt));
+		//float x = rx;
+		//float x = 100.0f*t+ cos(2.0f*t)*1.0f;
+		float x = radius * cos(t * periods * PI) + rz * cos(t * periods * PI);
+		accumx += 3.0f*t + 1;
+		//float x = rx;
 
-		float vx = 3.0f*sin(10.0f*3.141590f*t);
-		float vz = -50.0f*t;
-
-		vertexPositions.emplace_back(Vector3{ vx - 0.5f,vy,vz });
-		vertexPositions.emplace_back(Vector3{ vx + 0.5f,vy,vz });
-
-		//indexBuffer.emplace_back(index);
-		//index++;
+		controlPoints.emplace_back(Vector3{ x,0.0f,z });
 	}
+	
+	stepSize = 1.0f / 25.0f;
+
+	for (int cp = 3; cp < controlPoints.size(); cp+=2)
+	{
+		Vector3 controlPoint1 = controlPoints[cp - 3];
+		Vector3 controlPoint2 = controlPoints[cp - 2];
+		Vector3 controlPoint3 = controlPoints[cp - 1];
+		Vector3 controlPoint4 = controlPoints[cp - 0];
+
+
+		// cubic interpolation.
+		unsigned int index = 0;
+		for (float t = 0.20f; t < (0.75f + stepSize); t += stepSize)
+		{
+			float vx = pow((1 - t), 3) * controlPoint1.x + pow((1 - t), 2) * 3 * t*controlPoint2.x + (1 - t) * 3 * pow(t, 2)*controlPoint3.x + pow(t, 3)*controlPoint4.x;
+			float vy = pow((1 - t), 3) * controlPoint1.y + pow((1 - t), 2) * 3 * t*controlPoint2.y + (1 - t) * 3 * pow(t, 2)*controlPoint3.y + pow(t, 3)*controlPoint4.y;
+			float vz = pow((1 - t), 3) * controlPoint1.z + pow((1 - t), 2) * 3 * t*controlPoint2.z + (1 - t) * 3 * pow(t, 2)*controlPoint3.z + pow(t, 3)*controlPoint4.z;
+			//float vy = 0;
+
+
+			vertexPositions.emplace_back(Vector3{ vx - 0.5f,vy,vz-0.5f });
+			vertexPositions.emplace_back(Vector3{ vx + 0.5f,vy,vz+0.5f});
+		}
+	}
+
+
 
 	//vertexBuffer.emplace_back(Vector3{ -10.0f,0.0f,10.0f });
 	//vertexBuffer.emplace_back(Vector3{ 10.0f,0.0f,10.0f });

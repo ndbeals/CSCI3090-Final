@@ -26,10 +26,14 @@ public:
 	float velocity = 0;
 
 	float slowFactor = 0.1f;
-	float accelFactor = 0.8f;
+	float breakFactor = 20.0f;
+	float accelFactor = 10.5f;
 
 	float maxForward = 35.5f;
 	float maxBackward = -30.0f;
+
+	float mass = 1000.0f;
+	//float
 
 	glm::vec3 pivotPoint = glm::vec3(0, 0, -0.55f);
 

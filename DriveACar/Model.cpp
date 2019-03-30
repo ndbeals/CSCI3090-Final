@@ -3,11 +3,6 @@
 #include <fstream>
 #include <cmath>
 #include <GL/glew.h>
-#ifdef __APPLE__
-#  include <GLUT/glut.h>
-#else
-#  include <GL/glut.h>
-#endif
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
@@ -217,11 +212,6 @@ void Model::LoadGeometry()
 
 void Model::Update(double time, double dtime)
 {
-	//angle.y += 0.05f * (float)dtime;
-	//angle.z += 0.02f * (float)dtime;
-	//angle.x = glm::radians(90.0f);// 3.14159f / 2.0f;
-	//angle.y = 3.14159f / 2.0f
-
 	////glm::vec3 scaleVector = glm::vec3(1.0f, 1.0f, 1.0f) * scaleFactor;
 	modelm = glm::mat4(1.0f);
 	////model = glm::rotate(model, glm::radians(0.01f*(float)c), glm::vec3(0, 1, 0)); // rotate about the y-axis
@@ -230,8 +220,6 @@ void Model::Update(double time, double dtime)
 	modelm = glm::rotate(modelm, glm::radians(angle.x), glm::vec3(1, 0, 0)); // rotate about the x-axis
 	modelm = glm::rotate(modelm, glm::radians(angle.y), glm::vec3(0, 1, 0)); // rotate about the y-axis
 	modelm = glm::rotate(modelm, glm::radians(angle.z), glm::vec3(0, 0, 1)); // rotate about the z-axis
-
-	//printf("X: %f\n", angle.x);
 }
 
 void Model::Render(const glm::mat4& view, const glm::mat4& projection, const RenderData& data )
