@@ -3,7 +3,11 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-!DriveACar/meshes
+!DriveACar/meshes/*
+!DriveACar/meshes/*/
+!DriveACar/meshes/*/*
+!DriveACar/meshes/*/*/
+!DriveACar/meshes/*/*/*
 
 # User-specific files
 *.rsuser
