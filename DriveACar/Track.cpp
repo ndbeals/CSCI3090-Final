@@ -40,7 +40,7 @@ void Track::LoadGeometry()
 	std::uniform_real_distribution<float> dist(-20.0f, 20.0f);
 	std::uniform_real_distribution<float> pdist(15.0f, 50.0f);
 
-	float stepSize = 1.0f / 50.0f;
+	float stepSize = 1.0f / 100.0f;
 
 	float radius = pdist(mt);
 	//float periods = pdist(mt) / 5.0f;
@@ -68,7 +68,7 @@ void Track::LoadGeometry()
 		controlPoints.emplace_back(Vector3{ x,0.0f,z });
 	}
 	
-	stepSize = 1.0f / 25.0f;
+	stepSize = 1.0f / 50.0f;
 
 	for (int cp = 3; cp < controlPoints.size(); cp+=2)
 	{

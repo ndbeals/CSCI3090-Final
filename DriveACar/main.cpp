@@ -5,20 +5,15 @@
 #include <fstream>
 #include <cmath>
 
-
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 
-
-
 #include "ShaderProgram.h"
-//#include "ObjMesh.h"
 #include "error.h"
 
 #include "Model.h"
@@ -26,50 +21,27 @@
 #include "Track.h"
 
 
-
-
+float lastX = std::numeric_limits<float>::infinity();
+float lastY = std::numeric_limits<float>::infinity();
 float scaleFactor = 1.0f;
 #define SCALE_FACTOR 2.0f
 #define SHININESS_STEP 1.0f
 
 int width, height;
 
-
-float lightOffsetY = 0.0f;
-//glm::vec3 eyePosition(4, 3, 5);
-//glm::vec3 eyePosition(40, 30, 30);
-
-
-glm::vec3 eyePosition(10, 10, 10);
-bool animateLight = true;
-
-
-
-float lastX = std::numeric_limits<float>::infinity();
-float lastY = std::numeric_limits<float>::infinity();
-float shininess = 25.0f;
-
-
-//Model* Car;
-
 // Global Variables and data containers
-//std::vector<Model*> Models;
+glm::vec3 eyePosition; // this changes
+glm::vec4 eyeOffset(1.0f, 6.0f, 8.0f, 1); // constant
 std::vector<Model*> Models;
 glm::mat4 projection;
 
 
 double lastTime = 0;
 double nowTime = 0;
-int dt = 0;
 static void update(void) {
 	nowTime = glfwGetTime();
 
-    // move the light position over time along the x-axis, so we can see how it affects the shading
-    if (animateLight) {
-      float t = nowTime / 2500.0f;
-      lightOffsetY = sinf(t) * 40.0f;
-    }
-
+	// call update function for all models
 	for (auto const& model : Models)
 	{
 		model->Update( nowTime , nowTime-lastTime);
@@ -87,12 +59,7 @@ static void render(void) {
 
 
 	Model* car = Models[0];
-	glm::vec4 test = glm::vec4(1.0f, 6.0f, 8.0f, 1);
-
-	//glm::vec3 lookpos = car->modelm*glm::vec4(0,0,-5,1);
-	eyePosition = car->modelm*test;
-
-	//Model* car = Models[0];
+	eyePosition = car->modelm*eyeOffset;
 	glm::vec3 lookpos = car->modelm*glm::vec4(0,0,-5,1);
 
 	// view matrix - orient everything around our preferred view
@@ -103,29 +70,17 @@ static void render(void) {
 	);
 
 	glm::vec4 sunPos = view*glm::vec4(0.0f, 50.0f, 0.0f, 1.0f);
-	glm::vec3 test2 = glm::vec3(0, 40, 0);
 	RenderData render = {
 		eyePosition,
 		glm::vec3(sunPos),
 		Vector3{0.8,0.2,0.2},
-		shininess
+		25.0f
 	};
-
-	//Car->modelMeshes[0]->Render( model, view , projection);
-	//Car->Render(view,projection);
 
 	for (auto const& model : Models)
 	{
 		model->Render(view, projection,render);
 	}
-
-}
-
-static void reshape(int w, int h) {
-    glViewport(0, 0, w, h);
-
-    width = w;
-    height = h;
 }
 
 static void drag(int x, int y) {
@@ -184,7 +139,7 @@ void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 }
 
 
-void dragg(GLFWwindow* window, double xpos, double ypos) {
+void drag(GLFWwindow* window, double xpos, double ypos) {
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 
@@ -246,7 +201,7 @@ void dragg(GLFWwindow* window, double xpos, double ypos) {
 	}
 }
 
-void mouseg(GLFWwindow* window, int button, int action, int mods) {
+void mouse(GLFWwindow* window, int button, int action, int mods) {
 	if (action == GLFW_RELEASE) {
 		lastX = std::numeric_limits<float>::infinity();
 		lastY = std::numeric_limits<float>::infinity();
@@ -269,15 +224,15 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 
-	width = 1800;
-	height = 1200;
+	width = 1200;
+	height = 900;
 
 	// create a window and an OpenGL context
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
-	glfwWindowHint(GLFW_SAMPLES, 4);
+	//glfwWindowHint(GLFW_SAMPLES, 4);
 
 	GLFWwindow* window = glfwCreateWindow(width, height, "CSCI 3090U Base OpenGL Project", NULL, NULL);
 	if (!window) {
@@ -286,12 +241,12 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 
-	glfwSetMouseButtonCallback(window, mouseg);
-	glfwSetCursorPosCallback(window, dragg);
+	glfwSetMouseButtonCallback(window, mouse);
+	glfwSetCursorPosCallback(window, drag);
 	glfwSetKeyCallback(window, keyboard);
 	glfwSetFramebufferSizeCallback(window, reshape);
 	updateProjectionMatrix(width, height);
-	glfwSwapInterval(1);
+	
 
 	glfwMakeContextCurrent(window);
 
@@ -370,6 +325,7 @@ int main(int argc, char** argv) {
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+		glfwSwapInterval(1);
 	}
 
 	glfwDestroyWindow(window);

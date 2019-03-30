@@ -35,9 +35,6 @@ void Car::Update(double time, double dtime)
 	modelm = glm::rotate(modelm, glm::radians(angle.z), glm::vec3(0, 0, 1)); // rotate about the z-axis
 	modelm = glm::translate(modelm, -pivotPoint);
 
-
-
-
 	glm::mat4 tm = glm::mat4(1.0f);
 	tm = glm::rotate(tm, glm::radians(angle.x), glm::vec3(1, 0, 0)); // rotate about the x-axis
 	tm = glm::rotate(tm, glm::radians(angle.y), glm::vec3(0, 1, 0)); // rotate about the y-axis

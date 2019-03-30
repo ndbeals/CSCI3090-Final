@@ -11,10 +11,8 @@
 #include <glm/gtc/quaternion.hpp>
 
 #include "ShaderProgram.h"
-//#include "ObjMesh.h"
 
 #include "Model.h"
-//#include "ObjMesh.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION // define this in only *one* .cc
 #include "tinyobj/tiny_obj_loader.h"
@@ -22,20 +20,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-//#include "main.cpp"
-//float scaleFactor = 0;
-
-//Model::Model()
-//{
-//}
 
 std::map<std::string, GLuint> Mesh::loadedTextures;
 
-
-Model::~Model()
-{
-}
-
+Model::~Model() {};
 
 void Model::LoadGeometry()
 {
@@ -167,18 +155,13 @@ void Model::LoadGeometry()
 				vertexBuffer.emplace_back(Vector3{ vx, vy, vz });
 				normalBuffer.emplace_back(Vector3{ nx, ny, nz });
 				textureCoordBuffer.emplace_back(Vector2{ tx, ty });
-				//textureCoordBuffer.emplace_back(Vector2{ 0.5,0.5 });
 
 				indexBuffer.emplace_back(index_offset + v);
 			}
 			index_offset += fv;
-
-			// per-face material
-			//shapes[shapeId].mesh.material_ids[f];
 		}
 
 		newMesh->LoadGeometry(vertexBuffer, normalBuffer, textureCoordBuffer, indexBuffer);
-		//newMesh->LoadTexture();
 
 		newMesh->shaderProgram = shaderProgram;
 		
@@ -196,14 +179,9 @@ void Model::LoadGeometry()
 			}
 		} else
 		{
-			//newMesh->ambientColour = Vector3{ 1.0f,1.0f,1.0f };
-			//newMesh->specularColour = Vector3{ 1.0f,1.0f,1.0f };
-			//newMesh->diffuseColour = Vector3{ 112.0f / 255.0f, 78.0f / 255.0f, 53.0f / 255.0f };
-
 			matid = materials.size() - 1;
 			newMesh->ambientColour = Vector3{ materials[matid].ambient[0],materials[matid].ambient[1],materials[matid].ambient[2] };
 			newMesh->diffuseColour = Vector3{ materials[matid].diffuse[0],materials[matid].diffuse[1],materials[matid].diffuse[2] };
-			//newMesh->textureId = Mesh::loadedTextures[materials[matid].diffuse_texname];
 		}
 
 		modelMeshes.push_back(newMesh);
@@ -212,10 +190,9 @@ void Model::LoadGeometry()
 
 void Model::Update(double time, double dtime)
 {
-	////glm::vec3 scaleVector = glm::vec3(1.0f, 1.0f, 1.0f) * scaleFactor;
 	modelm = glm::mat4(1.0f);
-	////model = glm::rotate(model, glm::radians(0.01f*(float)c), glm::vec3(0, 1, 0)); // rotate about the y-axis
 	modelm = glm::translate(modelm, position);
+
 	modelm = glm::scale(modelm, scale);
 	modelm = glm::rotate(modelm, glm::radians(angle.x), glm::vec3(1, 0, 0)); // rotate about the x-axis
 	modelm = glm::rotate(modelm, glm::radians(angle.y), glm::vec3(0, 1, 0)); // rotate about the y-axis
@@ -230,34 +207,16 @@ void Model::Render(const glm::mat4& view, const glm::mat4& projection, const Ren
 	}
 }
 
-Mesh::Mesh()
-{
-
-}
-Mesh::~Mesh()
-{
-
-}
-
-//float Model::scaleFactor = 2.0f;
+Mesh::Mesh() {};
+Mesh::~Mesh() {};
 
 void Mesh::LoadGeometry( std::vector<Vector3> vertexBuffer, std::vector<Vector3> normalBuffer, std::vector<Vector2> textureCoordBuffer, std::vector<unsigned int> newIndexBuffer)
 {
-	//ObjMesh mesh;
-	//mesh.load("meshes/2cube.obj", false,false);
-
-	//VertexCount = mesh.getNumIndexedVertices();
 	VertexCount = newIndexBuffer.size();
-	//Vector3* vertexPositions = mesh.getIndexedPositions();
 	Vector3* vertexPositions = vertexBuffer.data();
-	//Vector2* vertexTextureCoords = mesh.getIndexedTextureCoords();
 	Vector2* vertexTextureCoords = textureCoordBuffer.data();
-	//Vector3* vertexNormals = mesh.getIndexedNormals();
 	Vector3* vertexNormals = normalBuffer.data();
-	//unsigned int* indexData = mesh.getTriangleIndices();
 	unsigned int* indexData = newIndexBuffer.data();
-
-	//printf("  LOADED SHAPE: VC: %d\n", VertexCount);
 
 	glGenBuffers(1, &positionsVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, positionsVBO);
@@ -276,62 +235,10 @@ void Mesh::LoadGeometry( std::vector<Vector3> vertexBuffer, std::vector<Vector3>
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * VertexCount, indexData, GL_STATIC_DRAW);
 }
 
-void Mesh::LoadTexture()
-{
-	int imageWidth, imageHeight;
-	int numComponents;
-
-	// load the image data into a bitmap
-	unsigned char *bitmap = stbi_load("textures/brickwall.jpg",
-		&imageWidth,
-		&imageHeight,
-		&numComponents, 4);
-
-	// generate a texture name
-	glGenTextures(1, &textureId);
-
-	// make the texture active
-	glBindTexture(GL_TEXTURE_2D, textureId);
-
-	// make a texture mip map
-	glGenerateTextureMipmap(textureId);
-	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
-
-	// specify the functions to use when shrinking/enlarging the texture image
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-
-	// specify the tiling parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	// send the data to OpenGL
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, imageWidth, imageHeight,
-		0, GL_RGBA, GL_UNSIGNED_BYTE, bitmap);
-
-	// bind the texture to unit 0
-	glBindTexture(GL_TEXTURE_2D, textureId);
-	glActiveTexture(GL_TEXTURE0);
-
-	// free the bitmap data
-	stbi_image_free(bitmap);
-}
-
 void Mesh::Render(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection, const RenderData& data)
 {
 	// activate our Meshes shader program
 	glUseProgram(shaderProgram);
-
-	// model matrix
-	//glm::mat4 mv = view * model;
-	//GLuint mMatrixId = glGetUniformLocation(shaderProgram, "u_MMatrix");
-	//glUniformMatrix4fv(mMatrixId, 1, GL_FALSE, &model[0][0]);
 
 	// model-view-projection matrix
 	glm::mat4 mvp = projection * view * model;
@@ -385,13 +292,11 @@ void Mesh::Render(const glm::mat4& model, const glm::mat4& view, const glm::mat4
 	GLint textureCoordsAttribId = glGetAttribLocation(shaderProgram, "textureCoords");
 	GLint normalAttribId = glGetAttribLocation(shaderProgram, "normal");
 
-	//if (positionAttribId>-1)
-	//{
-		// provide the vertex positions to the shaders
-		glBindBuffer(GL_ARRAY_BUFFER, positionsVBO);
-		glEnableVertexAttribArray(positionAttribId);
-		glVertexAttribPointer(positionAttribId, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-	//}
+
+	// providethe vertex positions to the shaders
+	glBindBuffer(GL_ARRAY_BUFFER, positionsVBO);
+	glEnableVertexAttribArray(positionAttribId);
+	glVertexAttribPointer(positionAttribId, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	if (textureCoordsAttribId>-1)
 	{
