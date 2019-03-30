@@ -68,8 +68,8 @@ void Model::LoadGeometry()
 	materials.push_back(tinyobj::material_t());
 
 	for (size_t i = 0; i < materials.size(); i++) {
-		printf("material[%d].diffuse_texname = %s\n", int(i),
-			materials[i].diffuse_texname.c_str());
+		//printf("material[%d].diffuse_texname = %s\n", int(i),
+			//materials[i].diffuse_texname.c_str());
 		tinyobj::material_t* mp = &materials[i];
 
 		if (mp->diffuse_texname.length() > 0) {
@@ -80,15 +80,7 @@ void Model::LoadGeometry()
 				int comp;
 
 				std::string texture_filename = mp->diffuse_texname;
-				//if (!FileExists(texture_filename)) {
-				//	// Append base dir.
-					texture_filename = "meshes/" + mp->diffuse_texname;
-				//	if (!FileExists(texture_filename)) {
-				//		std::cerr << "Unable to find file: " << mp->diffuse_texname
-				//			<< std::endl;
-				//		exit(1);
-				//	}
-				//}
+				texture_filename = "meshes/" + mp->diffuse_texname;
 
 				unsigned char* image =
 					stbi_load(texture_filename.c_str(), &w, &h, &comp, STBI_default);
@@ -97,8 +89,8 @@ void Model::LoadGeometry()
 						<< std::endl;
 					exit(1);
 				}
-				std::cout << "Loaded texture: " << texture_filename << ", w = " << w
-					<< ", h = " << h << ", comp = " << comp << std::endl;
+				//std::cout << "Loaded texture: " << texture_filename << ", w = " << w
+				//	<< ", h = " << h << ", comp = " << comp << std::endl;
 
 				glGenTextures(1, &texture_id);
 
@@ -176,9 +168,6 @@ void Model::LoadGeometry()
 					tx = attrib.texcoords[2 * idx.texcoord_index + 0];
 					ty = attrib.texcoords[2 * idx.texcoord_index + 1];
 				}
-
-				//printf("x: %f  y: %f  z: %f \n", vx,vy,vz);
-				//printf("idx: %d  x: %f  y: %f  z: %f\n",idx.vertex_index, vx, vy, vz);
 
 				vertexBuffer.emplace_back(Vector3{ vx, vy, vz });
 				normalBuffer.emplace_back(Vector3{ nx, ny, nz });
@@ -280,7 +269,7 @@ void Mesh::LoadGeometry( std::vector<Vector3> vertexBuffer, std::vector<Vector3>
 	//unsigned int* indexData = mesh.getTriangleIndices();
 	unsigned int* indexData = newIndexBuffer.data();
 
-	printf("  LOADED SHAPE: VC: %d\n", VertexCount);
+	//printf("  LOADED SHAPE: VC: %d\n", VertexCount);
 
 	glGenBuffers(1, &positionsVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, positionsVBO);
@@ -393,7 +382,7 @@ void Mesh::Render(const glm::mat4& model, const glm::mat4& view, const glm::mat4
 
 	// the shininess of the object's surface
 	GLuint shininessId = glGetUniformLocation(shaderProgram, "u_Shininess");
-	glUniform1f(shininessId, shininess*3.0f);
+	glUniform1f(shininessId, shininess);
 
 	GLuint hasTextureId = glGetUniformLocation(shaderProgram, "u_hasTexture");
 	glUniform1i(hasTextureId, textureId );

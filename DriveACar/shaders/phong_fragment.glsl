@@ -41,7 +41,7 @@ void main() {
    else
    {
       baseColour = u_DiffuseColour*0.4;
-      ambientColour = baseColour*0.15f;//u_AmbientColour*0.1f;//vec4(0.1, 0.1, 0.1, 1.0) * u_DiffuseColour;
+      ambientColour = baseColour*0.25f;//u_AmbientColour*0.1f;//vec4(0.1, 0.1, 0.1, 1.0) * u_DiffuseColour;
    }
       // baseColour = vec4(texture(textureSampler, v_TextureCoords).rgb, 1.0);
    // ambient
