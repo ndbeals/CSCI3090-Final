@@ -5,7 +5,14 @@ This is a base OpenGL Project with makefiles for UNIX (supporting Linux and the 
 # How to Build
 
 ## Windows
-Open the visual studio solution and build the release (or debug) version.
+Open a 'Visual Studio Developer Command' and navigate to the directory, then run 'nmake /F Nmakefile.Windows'
+Or: Open the visual studio solution and build the release (or debug) version.
+
+
+# To Run
+Double click the compiled Executable
+
+Note: For some reason, running the executable from inside the command line causes it to start thinking W was held down. Just double click the executable to avoid this.
 
 
 # Attributions
