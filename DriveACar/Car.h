@@ -29,8 +29,8 @@ public:
 	float breakFactor = 20.0f;
 	float accelFactor = 10.5f;
 
-	float maxForward = 35.5f;
-	float maxBackward = -30.0f;
+	float maxForward = 25.5f;
+	float maxBackward = -20.0f;
 
 	float mass = 1000.0f;
 	//float

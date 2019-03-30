@@ -23,13 +23,6 @@ void Car::Update(double time, double dtime)
 {
 	float dt = (float)dtime;
 
-	//angle.y += 0.05f * (float)dtime;
-	//position.z -= 0.001f * float(dtime);
-	//angle.z += 0.02f * (float)dtime;
-	//angle.x = glm::radians(90.0f);// 3.14159f / 2.0f;
-	//angle.y = 3.14159f / 2.0f
-
-	//glm::vec3 scaleVector = glm::vec3(1.0f, 1.0f, 1.0f) * scaleFactor;
 	modelm = glm::mat4(1.0f);
 	scale = glm::vec3(1, 1, 1);
 	//model = glm::rotate(model, glm::radians(0.01f*(float)c), glm::vec3(0, 1, 0)); // rotate about the y-axis
@@ -41,11 +34,6 @@ void Car::Update(double time, double dtime)
 	modelm = glm::rotate(modelm, glm::radians(angle.y), glm::vec3(0, 1, 0)); // rotate about the y-axis
 	modelm = glm::rotate(modelm, glm::radians(angle.z), glm::vec3(0, 0, 1)); // rotate about the z-axis
 	modelm = glm::translate(modelm, -pivotPoint);
-
-
-	//modelm = glm::translate(modelm, position);
-
-	//printf("X: %f\n", angle.x);
 
 
 
@@ -61,14 +49,6 @@ void Car::Update(double time, double dtime)
 	{
 		velocity += accelFactor*dt;
 		velocity = std::min(velocity, maxForward);
-
-		//if (velocity>1.4)
-		//{
-		//	//printf("a");
-		//}
-
-		//position += forward * dt * velocity;
-		//position.z -= 0.01f;
 	}
 	else if (sDown)
 	{
@@ -83,7 +63,6 @@ void Car::Update(double time, double dtime)
 	}
 	else
 	{
-		//velocity -= slowFactor * -signbit(velocity);
 		if (velocity>0)
 		{
 			velocity -= slowFactor;
@@ -99,10 +78,6 @@ void Car::Update(double time, double dtime)
 		position += forward * velocity * dt;
 	}
 
-	//if
-	//{
-	//	 
-	//}
 
 	if (aDown)
 	{
@@ -111,8 +86,6 @@ void Car::Update(double time, double dtime)
 	else if (dDown)
 	{
 		angle.y -= 100.0f * dt;
-		//angle.y -= turnOffset * dt;
-
 	}
 }
 

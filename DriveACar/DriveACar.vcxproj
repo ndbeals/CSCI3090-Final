@@ -125,19 +125,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Car.cpp" />
-    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
-    <ClCompile Include="ObjMesh.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="Track.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Car.h" />
-    <ClInclude Include="Entity.h" />
     <ClInclude Include="error.h" />
     <ClInclude Include="Model.h" />
-    <ClInclude Include="ObjMesh.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="Track.h" />
     <ClInclude Include="trackball.h" />

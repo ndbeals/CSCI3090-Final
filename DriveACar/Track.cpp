@@ -46,6 +46,7 @@ void Track::LoadGeometry()
 	//float periods = pdist(mt) / 5.0f;
 	float periods = 2.0f;
 
+	position.x = radius / 2.0f;
 
 	float accumx = 0.0f;
 	float accumz = 0.0f;
