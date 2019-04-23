@@ -55,9 +55,9 @@ void main() {
    // specular
    vec3 incidenceVector = -lightVector_viewspace;
    vec3 reflectionVector = reflect(incidenceVector, normal);
-   vec3 eyeVector = normalize(eyeViewSpace - v_Position.xyz);
+   vec3 eyeVector = -normalize(eyeViewSpace - v_Position.xyz);
    float cosAngle = clamp(dot(eyeVector, reflectionVector), 0, 1);
-   float specular = clamp(pow(cosAngle, u_Shininess),0.0f,5000.0f);
+   float specular = clamp(pow(cosAngle, u_Shininess),0.0f,500000.0f);
 
    gl_FragColor = baseColour * specular +
                   baseColour * diffuse +
